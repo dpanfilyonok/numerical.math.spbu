@@ -28,6 +28,7 @@ module AlgebraicInterpolation =
 
         member this.LagrangePolynomialWithPoints polynomialDegree minimizationMethod = 
             let interpolationPoints = getInterpolationPoints polynomialDegree minimizationMethod
+
             let polynomial = (fun x ->
                 let sumMemberK k x = 
                     interpolationPoints
@@ -48,26 +49,28 @@ module AlgebraicInterpolation =
         member this.NewtownPolynomialWithPoints polynomialDegree minimizationMethod = 
             let interpolationPoints = getInterpolationPoints polynomialDegree minimizationMethod
 
-            let tempTable = Array2D.zeroCreate<float> (polynomialDegree + 1) (polynomialDegree + 1)
+            let dividedDifferenceTable = Array2D.zeroCreate<float> (polynomialDegree + 1) (polynomialDegree + 1)
+            
             [0 .. polynomialDegree] 
-            |> Seq.iter (fun i -> tempTable.[0, i] <- interpolationPoints.[i].y)
-            let dividedDifferenceTable =                             
-                tempTable
-                |> Array2D.mapi 
-                    (fun i j value -> 
-                        if i > 0 && (Array2D.length1 tempTable - (j + i)) > 0 then 
-                            (tempTable.[i - 1, j + 1] - tempTable.[i - 1, j]) / 
+            |> Seq.iter (fun j -> dividedDifferenceTable.[0, j] <- interpolationPoints.[j].y)
+            
+            Array2D.zeroCreate<bool> (polynomialDegree + 1) (polynomialDegree + 1)
+            |> Array2D.iteri 
+                (fun i j _ -> 
+                    if i > 0 && (Array2D.length1 dividedDifferenceTable - (j + i)) > 0 then 
+                        dividedDifferenceTable.[i, j] <- 
+                            (dividedDifferenceTable.[i - 1, j + 1] - dividedDifferenceTable.[i - 1, j]) / 
                             (interpolationPoints.[j + i].x - interpolationPoints.[j].x) 
-                        else value
-                    )
-
+                    else ()
+                )
+                
             let polynomial = (fun x -> 
                 let secondFactors = 
                     List.unfold 
                         (fun (i, acc) -> 
                             if i < polynomialDegree then 
-                                let m = acc * (x - interpolationPoints.[i].x)
-                                Some (m, ((i + 1), m))
+                                let newAcc = acc * (x - interpolationPoints.[i].x)
+                                Some (newAcc, ((i + 1), newAcc))
                             else 
                                 None
                         ) (0, 1.)

@@ -49,9 +49,9 @@ module Lab02 =
         lab2output 8 m table y n pointsL (polyL y) (polyN y) 
         printfn "%.8f" (f y)
         pointsN |> List.map (fun point -> point.x) |> List.iter (fun node -> printfn "%.2f" node)
-        let lagr = [for x in a .. 0.001 .. b -> x, polyL x]
-        let newt = [for x in a .. 0.001 .. b -> x, polyN x]
-        let f = [for x in a .. 0.001 .. b -> x, f x]
+        let lagr = [for x in -2. .. 0.1 .. 2. -> x, polyL x]
+        let newt = [for x in -2. .. 0.1 .. 2. -> x, polyN x]
+        let f = [for x in -2. .. 0.1 .. 2. -> x, f x]
         let options = Options(
                         curveType = "function",
                         legend = Legend(position = "bottom")
