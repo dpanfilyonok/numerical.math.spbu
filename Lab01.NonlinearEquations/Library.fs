@@ -1,4 +1,4 @@
-namespace Lab01.NonlinearEquations
+namespace NumericalMethods
 
 module NonlinearEquations = 
     open System
@@ -13,6 +13,7 @@ module NonlinearEquations =
         left: float
         right: float
     }
+    
 
     let splitSection (section: Section) (h: float) = 
         Seq.unfold (fun leftBorder -> 
