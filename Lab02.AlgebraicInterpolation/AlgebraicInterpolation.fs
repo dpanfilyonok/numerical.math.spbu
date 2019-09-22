@@ -1,21 +1,30 @@
 namespace NumericalMethods
 
+/// Решение задачи алгебраического интерполирования многочленами в форме Лагранжа и Ньютона
 module AlgebraicInterpolation = 
     open System
 
+    /// Точка (x, y)
     type InterpolationPoint = {
         x: float
         y: float
     }
 
+    /// Метод минимизации погрешности
     type ErrorMinimizationMethod = 
         | InNode of float
         | OnSection of float * float
 
+    /// Задача об интерполяции таблично заданной функции класса MC^(n+1)[a,b] 
     type InterpolationTask(startingMeasuring: InterpolationPoint list) = 
         let mutable allMeasuring = startingMeasuring
-        
-        let getInterpolationPoints polynomialDegree minimizationMethod = 
+
+        /// Добавляет измерения в таблицу
+        member this.AddMeasuring measuring = 
+            allMeasuring <- List.append allMeasuring measuring 
+
+        /// Возвращает точки интерполяции, обеспечивающие наименьшую погрешность для заданной степени полинома
+        member this.GetInterpolationPoints polynomialDegree minimizationMethod = 
             match minimizationMethod with
             | InNode x -> 
                 allMeasuring
@@ -23,13 +32,11 @@ module AlgebraicInterpolation =
                 |> List.take (polynomialDegree + 1)
             | OnSection _ -> []
 
-        member this.AddMeasuring measuring = 
-            allMeasuring <- List.append allMeasuring measuring 
+        /// Возвращает полином в форме Лагранжа заданной степени, постоенный по оптимальным узлам
+        member this.LagrangePolynomial polynomialDegree minimizationMethod = 
+            let interpolationPoints = this.GetInterpolationPoints polynomialDegree minimizationMethod
 
-        member this.LagrangePolynomialWithPoints polynomialDegree minimizationMethod = 
-            let interpolationPoints = getInterpolationPoints polynomialDegree minimizationMethod
-
-            let polynomial = (fun x ->
+            (fun x ->
                 let sumMemberK k x = 
                     interpolationPoints
                     |> Seq.mapi (fun i point -> i, point.x)
@@ -40,14 +47,9 @@ module AlgebraicInterpolation =
                 [0 .. polynomialDegree]
                 |> Seq.sumBy (fun i -> sumMemberK i x))
 
-            polynomial, interpolationPoints
-
-        member this.LagrangePolynomial polynomialDegree minimizationMethod = 
-            this.LagrangePolynomialWithPoints polynomialDegree minimizationMethod
-            |> fst
-
-        member this.NewtownPolynomialWithPoints polynomialDegree minimizationMethod = 
-            let interpolationPoints = getInterpolationPoints polynomialDegree minimizationMethod
+        /// Возвращает полином в форме Ньютона заданной степени, постоенный по оптимальным узлам
+        member this.NewtownPolynomial polynomialDegree minimizationMethod = 
+            let interpolationPoints = this.GetInterpolationPoints polynomialDegree minimizationMethod
 
             let dividedDifferenceTable = Array2D.zeroCreate<float> (polynomialDegree + 1) (polynomialDegree + 1)
             
@@ -64,7 +66,7 @@ module AlgebraicInterpolation =
                     else ()
                 )
                 
-            let polynomial = (fun x -> 
+            (fun x -> 
                 let secondFactors = 
                     List.unfold 
                         (fun (i, acc) -> 
@@ -82,11 +84,4 @@ module AlgebraicInterpolation =
                 1. :: secondFactors
                 |> List.zip dividedDifference
                 |> List.sumBy (fun (a, b) -> a * b)
-            )
-
-            polynomial, interpolationPoints
-
-        member this.NewtownPolynomial polynomialDegree minimizationMethod = 
-            this.NewtownPolynomialWithPoints polynomialDegree minimizationMethod
-            |> fst
-            
+            )            

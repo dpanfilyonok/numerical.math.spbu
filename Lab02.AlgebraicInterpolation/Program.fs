@@ -7,14 +7,19 @@ module Lab02 =
 
     /// Интерполируемая функция из класс MC^(n+1)[a,b]
     let f = (fun x -> 1. - Math.Exp(-x) + x ** 2.)
+
     /// Левый конец отрезка, содержащего узлы таблицы измерений
     let a = 0.
-    /// Правы конец отрзека, содержащего узлы таблицы измерений
+
+    /// Правый конец отрзека, содержащего узлы таблицы измерений
     let b = 1.5
+
     /// Степень интерполяционного многочлена (n <= m)
     let n = 7
+
     /// m + 1 - число значений в таблице измерений
     let m = 15
+    
     /// Точка интерполирования, значения в которой хотим найти 
     /// (ограничений на значение нет)
     let y = 0.95
@@ -43,23 +48,21 @@ module Lab02 =
     [<EntryPoint>]
     let main argv =
         let table = getMeasuringTable ()
-        let task = InterpolationTask table
-        let (polyL, pointsL) =  task.LagrangePolynomialWithPoints n (InNode y)
-        let (polyN, pointsN) = task.NewtownPolynomialWithPoints n (InNode y)
-        lab2output 8 m table y n pointsL (polyL y) (polyN y) 
-        printfn "%.8f" (f y)
-        pointsN |> List.map (fun point -> point.x) |> List.iter (fun node -> printfn "%.2f" node)
-        let lagr = [for x in -2. .. 0.1 .. 2. -> x, polyL x]
-        let newt = [for x in -2. .. 0.1 .. 2. -> x, polyN x]
-        let f = [for x in -2. .. 0.1 .. 2. -> x, f x]
-        let options = Options(
-                        curveType = "function",
-                        legend = Legend(position = "bottom")
-                        )
-        [lagr; newt; f]
+        let interpolationTask = InterpolationTask table
+        let interplationPoints = interpolationTask.GetInterpolationPoints n (InNode y)
+        let lagrangePolymomial =  interpolationTask.LagrangePolynomial n (InNode y)
+        let newtownPolynomial = interpolationTask.NewtownPolynomial n (InNode y)
+        lab2output 8 m table y n interplationPoints (lagrangePolymomial y) (newtownPolynomial y) 
+
+        let lagrangeForm = [for x in -2. .. 0.1 .. 2. -> x, lagrangePolymomial x]
+        let newtownForm = [for x in -2. .. 0.1 .. 2. -> x, newtownPolynomial x]
+        let originalFunction = [for x in -2. .. 0.1 .. 2. -> x, f x]
+        let options = Options(curveType = "function")
+
+        [lagrangeForm; newtownForm; originalFunction]
         |> Chart.Line
         |> Chart.WithOptions options
-        |> Chart.WithLabels ["lagr"; "newt"; "f"]
+        |> Chart.WithLabels ["Lagrange"; "Newtown"; "Original"]
         |> Chart.Show
 
         0
