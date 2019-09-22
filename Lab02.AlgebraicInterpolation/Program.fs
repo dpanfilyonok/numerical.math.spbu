@@ -43,6 +43,9 @@ module Lab02 =
     let main argv =
         let table = getMeasuringTable ()
         let task = InterpolationTask table
-        let (poly, points) =  task.LagrangePolynomialWithPoints n (InNode y)
-        lab2output 6 m table y n points (poly y) 0.
+        let (polyL, pointsL) =  task.LagrangePolynomialWithPoints n (InNode y)
+        let (polyN, pointsN) = task.NewtownPolynomialWithPoints n (InNode y)
+        lab2output 8 m table y n pointsL (polyL y) (polyN y) 
+        printfn "%.8f" (f y)
+        pointsN |> List.map (fun point -> point.x) |> List.iter (fun node -> printfn "%.2f" node)
         0
