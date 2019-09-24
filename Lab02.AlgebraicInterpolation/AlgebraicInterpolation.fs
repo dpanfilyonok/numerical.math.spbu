@@ -15,7 +15,7 @@ module AlgebraicInterpolation =
         | InNode of float
         | OnSection of float * float
 
-    /// Задача об интерполяции таблично заданной функции класса MC^(n+1)[a,b] 
+    /// Задача об интерполяции таблично заданной функции
     type InterpolationTask(startingMeasuring: InterpolationPoint list) = 
         let mutable allMeasuring = startingMeasuring
 

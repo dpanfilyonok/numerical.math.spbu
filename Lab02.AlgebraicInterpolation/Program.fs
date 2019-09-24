@@ -5,7 +5,7 @@ module Lab02 =
     open AlgebraicInterpolation
     open XPlot.GoogleCharts
 
-    /// Интерполируемая функция из класс MC^(n+1)[a,b]
+    /// Интерполируемая функция
     let f = (fun x -> 1. - Math.Exp(-x) + x ** 2.)
 
     /// Левый конец отрезка, содержащего узлы таблицы измерений
@@ -52,7 +52,7 @@ module Lab02 =
         let interplationPoints = interpolationTask.GetInterpolationPoints n (InNode y)
         let lagrangePolymomial =  interpolationTask.LagrangePolynomial n (InNode y)
         let newtownPolynomial = interpolationTask.NewtownPolynomial n (InNode y)
-        lab2output 8 m table y n interplationPoints (lagrangePolymomial y) (newtownPolynomial y) 
+        lab2output 15 m table y n interplationPoints (lagrangePolymomial y) (newtownPolynomial y) 
 
         let lagrangeForm = [for x in -2. .. 0.1 .. 2. -> x, lagrangePolymomial x]
         let newtownForm = [for x in -2. .. 0.1 .. 2. -> x, newtownPolynomial x]
