@@ -1,4 +1,4 @@
-namespace Lab01.NonlinearEquations
+namespace NumericalMethods
 
 module NonlinearEquations = 
     open System
