@@ -2,7 +2,6 @@ namespace NumericalMethods
 
 module NonlinearEquations = 
     open System
-    open System.IO
 
     type Methods = 
         | Bisection   
@@ -11,57 +10,61 @@ module NonlinearEquations =
         | Secant
 
     type Section = {
-        left: float
-        right: float
+        Left: float
+        Right: float
     }
+    with 
+        static member Default = {
+            Left = 0.
+            Right = 1. 
+        } 
+        override this.ToString () = 
+            sprintf "[%0.2f , %0.2f]" this.Left this.Right
+
+    type MethodInfo = {
+        mutable Section: Section
+        mutable StartApproximation: float option
+        mutable StepCount: int
+        mutable Root: float
+        mutable AbsoluteError: float
+    } 
+    with 
+        static member Default = {
+            Section = Section.Default
+            StartApproximation = None
+            StepCount = 0
+            Root = 0.
+            AbsoluteError = 0.
+        }
 
     let splitSection stepSize section = 
         Seq.unfold (fun leftBorder -> 
-            if Math.Abs (leftBorder - section.right) < 1e-6 then None
+            if Math.Abs (leftBorder - section.Right) < 1e-6 then None
             else
-                let rightBoarder = min section.right (leftBorder + stepSize)
-                Some ((leftBorder, rightBoarder), rightBoarder)) section.left
+                let rightBoarder = min section.Right (leftBorder + stepSize)
+                Some ((leftBorder, rightBoarder), rightBoarder)) section.Left
 
     let separateRoots f stepSize section = 
         splitSection stepSize section
         |> Seq.filter (fun x -> (f <| fst x) * (f <| snd x) <= 0.)
-        |> Seq.map (fun (a, b) -> {left = a; right = b})
+        |> Seq.map (fun (a, b) -> {Left = a; Right = b})
 
     let findRoots
             (f: float -> float) 
             (section: Section) 
             (epsilon: float) 
-            (method: Methods)
-            (loggerOpt: TextWriter option) =
-
-        let outputForEachRoot methodType valuePrecision epsilon x0 stepCount xn fxn = 
-            match loggerOpt with
-            | None -> ()
-            | Some logger ->
-                let methodS = 
-                    match methodType with
-                    | Bisection -> "Метод бисекции"
-                    | Newton _ -> "Метод Ньютона"
-                    | ModifiedNewton _ -> "Модифицированный метод Ньютона"
-                    | Secant -> "Метод секущих"
-                logger.WriteLine (sprintf "Используемый метод : %s" methodS)
-                logger.WriteLine (sprintf "Начальное приближение x_0 = %.*f" valuePrecision x0)
-                logger.WriteLine (sprintf "Количество шагов для достижения необходимой точности : %i" stepCount)
-                logger.WriteLine (sprintf "Приближенное решение уравнения  с точностью до %e : %.*f" epsilon valuePrecision xn)
-                // logger.WriteLine (sprintf "|x_N - x_(N-1)| = %*f" valuePrecision (Math.Abs ((float)xn - xnp))) 
-                logger.WriteLine (sprintf "Абсолютная величина невязки |f(x_N) - 0| =  %.*f" valuePrecision fxn)
-                logger.WriteLine ()
+            (method: Methods) =
 
         let bisectionMethod startApproximation = 
             let rec loop currentApproximation stepNumber = 
-                let middle = (currentApproximation.right + currentApproximation.left) / 2.
-                if Math.Abs (currentApproximation.right - currentApproximation.left) < 2. * epsilon then 
+                let middle = (currentApproximation.Right + currentApproximation.Left) / 2.
+                if Math.Abs (currentApproximation.Right - currentApproximation.Left) < 2. * epsilon then 
                     middle, (stepNumber + 1)
                 else 
-                    if (f currentApproximation.left) * (f middle) < 0. then 
-                        loop {left = currentApproximation.left; right = middle} (stepNumber + 1)
+                    if (f currentApproximation.Left) * (f middle) < 0. then 
+                        loop {Left = currentApproximation.Left; Right = middle} (stepNumber + 1)
                     else
-                        loop {left = middle; right = currentApproximation.right} (stepNumber + 1)
+                        loop {Left = middle; Right = currentApproximation.Right} (stepNumber + 1)
             loop startApproximation 0
 
         let newtonMethod startApproximation f' = 
@@ -106,15 +109,21 @@ module NonlinearEquations =
         |> separateRoots f 1e-2
         |> Seq.map 
             (fun section -> 
-                let middle = (section.left - section.right) / 2.
-                let wrap method startApproximation wrappedObject = 
-                    outputForEachRoot method 10 epsilon startApproximation (snd wrappedObject) (fst wrappedObject) (f <| fst wrappedObject)
-                    wrappedObject
+                let middle = (section.Left + section.Right) / 2.
+                let logAndReturn startApproximation compMethodResult = 
+                    let logger = MethodInfo.Default
+                    logger.Section <- section
+                    logger.StartApproximation <- startApproximation
+                    logger.StepCount <- snd compMethodResult
+                    logger.Root <- fst compMethodResult
+                    logger.AbsoluteError <- Math.Abs (f <| fst compMethodResult)
+                    fst compMethodResult, logger
+
                 match method with
-                | Bisection -> wrap Bisection middle <| bisectionMethod section
-                | Newton derivative -> wrap (Newton id) middle <| newtonMethod middle derivative
-                | ModifiedNewton derivative -> wrap (ModifiedNewton id) middle <| newtonModifiedMethod middle derivative
-                | Secant -> wrap Secant section.left <| secantMethod section.left section.right
+                | Bisection -> logAndReturn None <| bisectionMethod section
+                | Newton derivative -> logAndReturn (Some middle) <| newtonMethod middle derivative
+                | ModifiedNewton derivative -> logAndReturn (Some middle) <| newtonModifiedMethod middle derivative
+                | Secant -> logAndReturn None <| secantMethod section.Left section.Right
             )
         |> Seq.toList
         |> List.unzip
