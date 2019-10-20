@@ -40,7 +40,7 @@ module Lab01 =
             let (roots, info) = findRoots f { Left = a; Right = b } epsilon method
             let addRow row (table: ConsoleTable) = table.AddRow row
             let table =
-                ConsoleTable (List.map (fun x -> x.Section.ToString ()) info |> List.toArray)
+                ConsoleTable (List.map (fun x -> x.Segment.ToString ()) info |> List.toArray)
                 |> addRow (List.map (fun x -> 
                                             (if x.StartApproximation.IsSome 
                                                 then x.StartApproximation.Value.ToString () 

@@ -11,7 +11,7 @@ module NonlinearEquations =
         | Secant
 
     type MethodInfo = {
-        mutable Section: Section
+        mutable Segment: LineSegment
         mutable StartApproximation: float option
         mutable StepCount: int
         mutable Root: float
@@ -19,7 +19,7 @@ module NonlinearEquations =
     } 
     with 
         static member Default = {
-            Section = Section.Default
+            Segment = LineSegment.Default
             StartApproximation = None
             StepCount = 0
             Root = 0.
@@ -27,11 +27,11 @@ module NonlinearEquations =
         }
 
     let separateRoots f stepSize section = 
-        splitSection stepSize section
+        splitSegmentWithStep stepSize section
         |> Seq.filter (fun x -> (f <| fst x) * (f <| snd x) <= 0.)
         |> Seq.map (fun (a, b) -> {Left = a; Right = b})
 
-    let findRoots (f: float -> float) (section: Section) (epsilon: float) (method: Methods) =
+    let findRoots (f: float -> float) (section: LineSegment) (epsilon: float) (method: Methods) =
         let bisectionMethod startApproximation = 
             let rec loop currentApproximation stepNumber = 
                 let middle = (currentApproximation.Right + currentApproximation.Left) / 2.
@@ -89,7 +89,7 @@ module NonlinearEquations =
                 let middle = (section.Left + section.Right) / 2.
                 let logAndReturn startApproximation compMethodResult = 
                     let logger = MethodInfo.Default
-                    logger.Section <- section
+                    logger.Segment <- section
                     logger.StartApproximation <- startApproximation
                     logger.StepCount <- snd compMethodResult
                     logger.Root <- fst compMethodResult
