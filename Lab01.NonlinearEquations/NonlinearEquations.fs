@@ -2,7 +2,8 @@ namespace NumericalMethods
 
 module NonlinearEquations = 
     open System
-    open Utils.Section
+    open Utils
+    open Utils.Segment
 
     type Methods = 
         | Bisection   
@@ -28,8 +29,7 @@ module NonlinearEquations =
 
     let separateRoots f stepSize section = 
         splitSegmentWithStep stepSize section
-        |> Seq.filter (fun x -> (f <| fst x) * (f <| snd x) <= 0.)
-        |> Seq.map (fun (a, b) -> {Left = a; Right = b})
+        |> Seq.filter (fun x -> (f <| x.Left) * (f <| x.Right) <= 0.)
 
     let findRoots (f: float -> float) (section: LineSegment) (epsilon: float) (method: Methods) =
         let bisectionMethod startApproximation = 

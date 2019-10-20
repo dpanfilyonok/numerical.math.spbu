@@ -4,6 +4,7 @@ module Lab01 =
     open System
     open NonlinearEquations
     open ConsoleTables
+    open Utils
 
     // Непрерывна на a b
     let f = (fun x -> 4. * (Math.Cos x) + 0.3 * x)
