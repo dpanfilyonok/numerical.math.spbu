@@ -2,24 +2,13 @@ namespace NumericalMethods
 
 module NonlinearEquations = 
     open System
+    open Utils.Section
 
     type Methods = 
         | Bisection   
         | Newton of (float -> float)
         | ModifiedNewton of (float -> float)
         | Secant
-
-    type Section = {
-        Left: float
-        Right: float
-    }
-    with 
-        static member Default = {
-            Left = 0.
-            Right = 1. 
-        } 
-        override this.ToString () = 
-            sprintf "[%0.2f , %0.2f]" this.Left this.Right
 
     type MethodInfo = {
         mutable Section: Section
@@ -37,24 +26,12 @@ module NonlinearEquations =
             AbsoluteError = 0.
         }
 
-    let splitSection stepSize section = 
-        Seq.unfold (fun leftBorder -> 
-            if Math.Abs (leftBorder - section.Right) < 1e-6 then None
-            else
-                let rightBoarder = min section.Right (leftBorder + stepSize)
-                Some ((leftBorder, rightBoarder), rightBoarder)) section.Left
-
     let separateRoots f stepSize section = 
         splitSection stepSize section
         |> Seq.filter (fun x -> (f <| fst x) * (f <| snd x) <= 0.)
         |> Seq.map (fun (a, b) -> {Left = a; Right = b})
 
-    let findRoots
-            (f: float -> float) 
-            (section: Section) 
-            (epsilon: float) 
-            (method: Methods) =
-
+    let findRoots (f: float -> float) (section: Section) (epsilon: float) (method: Methods) =
         let bisectionMethod startApproximation = 
             let rec loop currentApproximation stepNumber = 
                 let middle = (currentApproximation.Right + currentApproximation.Left) / 2.
