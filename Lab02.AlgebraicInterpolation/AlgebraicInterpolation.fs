@@ -3,12 +3,7 @@ namespace NumericalMethods
 /// Решение задачи алгебраического интерполирования многочленами в форме Лагранжа и Ньютона
 module AlgebraicInterpolation = 
     open System
-
-    /// Точка (x, y)
-    type InterpolationPoint = {
-        x: float
-        y: float
-    }
+    open Utils.Point
 
     /// Метод минимизации погрешности
     type ErrorMinimizationMethod = 
@@ -16,7 +11,7 @@ module AlgebraicInterpolation =
         | OnSection of float * float
 
     /// Задача об интерполяции таблично заданной функции
-    type InterpolationTask(startingMeasuring: InterpolationPoint list) = 
+    type InterpolationTask(startingMeasuring: Point list) = 
         let mutable allMeasuring = startingMeasuring
 
         /// Добавляет измерения в таблицу
@@ -28,7 +23,7 @@ module AlgebraicInterpolation =
             match minimizationMethod with
             | InNode x -> 
                 allMeasuring
-                |> List.sortBy (fun point -> Math.Abs (point.x - x))
+                |> List.sortBy (fun point -> Math.Abs (point.X - x))
                 |> List.take (polynomialDegree + 1)
             | OnSection _ -> []
 
@@ -39,10 +34,10 @@ module AlgebraicInterpolation =
             (fun x ->
                 let sumMemberK k x = 
                     interpolationPoints
-                    |> Seq.mapi (fun i point -> i, point.x)
+                    |> Seq.mapi (fun i point -> i, point.X)
                     |> Seq.filter (fun xi -> fst xi <> k)
-                    |> Seq.map (fun xi -> (x - snd xi) / (interpolationPoints.[k].x - snd xi))
-                    |> Seq.fold (*) interpolationPoints.[k].y
+                    |> Seq.map (fun xi -> (x - snd xi) / (interpolationPoints.[k].X - snd xi))
+                    |> Seq.fold (*) interpolationPoints.[k].Y
                 
                 [0 .. polynomialDegree]
                 |> Seq.sumBy (fun i -> sumMemberK i x))
@@ -54,7 +49,7 @@ module AlgebraicInterpolation =
             let dividedDifferenceTable = Array2D.zeroCreate<float> (polynomialDegree + 1) (polynomialDegree + 1)
             
             [0 .. polynomialDegree] 
-            |> Seq.iter (fun j -> dividedDifferenceTable.[0, j] <- interpolationPoints.[j].y)
+            |> Seq.iter (fun j -> dividedDifferenceTable.[0, j] <- interpolationPoints.[j].Y)
             
             Array2D.zeroCreate<bool> (polynomialDegree + 1) (polynomialDegree + 1)
             |> Array2D.iteri 
@@ -62,7 +57,7 @@ module AlgebraicInterpolation =
                     if i > 0 && (Array2D.length1 dividedDifferenceTable - (j + i)) > 0 then 
                         dividedDifferenceTable.[i, j] <- 
                             (dividedDifferenceTable.[i - 1, j + 1] - dividedDifferenceTable.[i - 1, j]) / 
-                            (interpolationPoints.[j + i].x - interpolationPoints.[j].x) 
+                            (interpolationPoints.[j + i].X - interpolationPoints.[j].X) 
                     else ()
                 )
                 
@@ -71,7 +66,7 @@ module AlgebraicInterpolation =
                     List.unfold 
                         (fun (i, acc) -> 
                             if i < polynomialDegree then 
-                                let newAcc = acc * (x - interpolationPoints.[i].x)
+                                let newAcc = acc * (x - interpolationPoints.[i].X)
                                 Some (newAcc, ((i + 1), newAcc))
                             else 
                                 None

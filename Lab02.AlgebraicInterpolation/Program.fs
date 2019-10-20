@@ -4,6 +4,7 @@ module Lab02 =
     open System
     open AlgebraicInterpolation
     open XPlot.GoogleCharts
+    open Utils.Point
 
     /// Интерполируемая функция
     let f = (fun x -> 1. - Math.Exp(-x) + x ** 2.)
@@ -32,7 +33,7 @@ module Lab02 =
         table |> List.iter (fun point -> printfn "%A" point)
         printfn "6) Степень многчлена n : %i" n
         printfn "7) Набор узлов интерполяции :"
-        interpolationPoints |> List.map (fun point -> point.x) |> List.iter (fun node -> printfn "%.2f" node)
+        interpolationPoints |> List.map (fun point -> point.X) |> List.iter (fun node -> printfn "%.2f" node)
         printfn "8) Значение интерполяционного многочлена в форме Лагранжа в точке x=%.2f : %.*f" y fValuePrecision plx
         printfn "9) Значение абсолютной фактической погрешнойсти для формы Лагранжа : %.*f" fValuePrecision (Math.Abs (f y - plx))
         printfn "10) Значение интерполяционного многочлена в форме Ньютона в точке x=%.2f : %.*f" y fValuePrecision pnx
@@ -43,7 +44,7 @@ module Lab02 =
         nodes
         |> List.map (fun node -> f <| node)
         |> List.zip nodes
-        |> List.map (fun point -> {x = fst point; y = snd point})
+        |> List.map (fun point -> {X = fst point; Y = snd point})
 
     [<EntryPoint>]
     let main argv =
