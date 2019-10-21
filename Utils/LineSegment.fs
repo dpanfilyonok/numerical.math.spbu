@@ -23,8 +23,8 @@ module Segment =
     open System
 
     type SegmentType = 
-        | WithoutLeftEndpoint
-        | WithoutRightEndpoint
+        | WithRightEndpoint
+        | WithLeftEndpoint
         | WithBothEndpoints
         | WithoutBothEndpoints
 
@@ -40,7 +40,7 @@ module Segment =
     let splitSegmentIntoEqualParts amountOfParts segment = 
         splitSegmentWithStep ((segment.Right - segment.Left) / (float)amountOfParts) segment
 
-    let getEquidistantPoints (segment: LineSegment) amountOfParts sType = 
+    let getEquidistantPoints sType amountOfParts (segment: LineSegment) = 
         let bothEndpoint = 
             splitSegmentIntoEqualParts amountOfParts segment
             |> Seq.map (fun segment -> segment.Right)
@@ -52,6 +52,6 @@ module Segment =
 
         match sType with 
         | WithBothEndpoints -> bothEndpoint
-        | WithoutRightEndpoint -> withoutRight.Value
-        | WithoutLeftEndpoint -> withoutLeft.Value
+        | WithLeftEndpoint -> withoutRight.Value
+        | WithRightEndpoint -> withoutLeft.Value
         | WithoutBothEndpoints -> withoutBoth.Value

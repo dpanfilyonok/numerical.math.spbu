@@ -5,40 +5,45 @@ module NumericalIntegration =
     open Utils.Segment
 
     type QuadratureRule = 
-        | LeftRectangle of int  
-        | RightRectangle of int  
-        | MiddleRectangle of int  
-        | Trapezoidal of int
-        | Simpsons of int
+        | LeftRectangleRule of int  
+        | RightRectangleRule of int  
+        | MiddleRectangleRule of int  
+        | TrapezoidalRule of int
+        | SimpsonsRule of int
 
     type IntegrationTask(f: float -> float, segment: LineSegment) = 
         let compositeLeftRectangleRule (segment: LineSegment) subintervalsCount = 
             let h = segment.Length / (float subintervalsCount)
-            getEquidistantPoints segment subintervalsCount WithoutRightEndpoint
+            segment
+            |> getEquidistantPoints WithLeftEndpoint subintervalsCount 
             |> List.sumBy f
             |> (*) h
 
         let compositeRightRectangleRule (segment: LineSegment) subintervalsCount = 
             let h = segment.Length / (float subintervalsCount)
-            getEquidistantPoints segment subintervalsCount WithoutLeftEndpoint
+            segment
+            |> getEquidistantPoints WithRightEndpoint subintervalsCount
             |> List.sumBy f
             |> (*) h
 
         let compositeMiddleRectangleRule (segment: LineSegment) subintervalsCount = 
             let h = segment.Length / (float subintervalsCount)
-            getEquidistantPoints segment subintervalsCount WithoutLeftEndpoint
+            segment
+            |> getEquidistantPoints WithLeftEndpoint subintervalsCount
             |> List.map (fun point -> point + h / 2.) 
             |> List.sumBy f
             |> (*) h
           
         let compositeTrapezoidalRule (segment: LineSegment) subintervalsCount = 
             let h = segment.Length / (float subintervalsCount)
-            getEquidistantPoints segment subintervalsCount WithoutBothEndpoints
+            segment
+            |> getEquidistantPoints WithoutBothEndpoints subintervalsCount
             |> List.sumBy f
             |> (+) <| (f segment.Left |> (+) <| f segment.Right) / 2.
             |> (*) h
 
-        let compositeSimpsonsRule (segment: LineSegment) subintervalsCount = 
+        // N + 1 point -> N subintervals
+        let compositeSimpsonsRule (segment: LineSegment) subintervalsCount =    
             let h = segment.Length / (float subintervalsCount)
             let middleCoefficients = 
                 seq {
@@ -47,7 +52,8 @@ module NumericalIntegration =
                         yield 2.
                 } |> Seq.take (subintervalsCount - 1) |> Seq.toList
             
-            getEquidistantPoints segment subintervalsCount WithoutBothEndpoints
+            segment
+            |> getEquidistantPoints WithoutBothEndpoints subintervalsCount
             |> List.zip middleCoefficients
             |> List.sumBy (fun (a, x) -> a * (f x))
             |> (+) <| f segment.Left |> (+) <| f segment.Right
@@ -55,9 +61,9 @@ module NumericalIntegration =
 
         member this.SolveWith (quadratureRule: QuadratureRule) = 
             match quadratureRule with 
-            | LeftRectangle subintervalsCount -> compositeLeftRectangleRule segment subintervalsCount
-            | RightRectangle subintervalsCount -> compositeRightRectangleRule segment subintervalsCount
-            | MiddleRectangle subintervalsCount -> compositeMiddleRectangleRule segment subintervalsCount
-            | Trapezoidal subintervalsCount -> compositeTrapezoidalRule segment subintervalsCount
-            | Simpsons subintervalsCount -> compositeSimpsonsRule segment subintervalsCount
+            | LeftRectangleRule subintervalsCount -> compositeLeftRectangleRule segment subintervalsCount
+            | RightRectangleRule subintervalsCount -> compositeRightRectangleRule segment subintervalsCount
+            | MiddleRectangleRule subintervalsCount -> compositeMiddleRectangleRule segment subintervalsCount
+            | TrapezoidalRule subintervalsCount -> compositeTrapezoidalRule segment subintervalsCount
+            | SimpsonsRule subintervalsCount -> compositeSimpsonsRule segment subintervalsCount
             
