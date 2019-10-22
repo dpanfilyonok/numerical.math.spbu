@@ -5,19 +5,22 @@ module Lab04 =
     open NumericalIntegration
     open XPlot.GoogleCharts
 
+    /// Интегрируемая функция (непрерывна и конечна на [a;b])
     let f = Math.Tanh
 
+    /// Первообразная функции f
+    let antiderivativeF = Math.Cosh >> Math.Log
+
+    /// Левый конец отрезка интегрирования
     let a = 0.
 
+    /// Правый конец отрезка интегрирования
     let b = Math.PI / 2.
 
-    let j = 0.91995540023015
+    /// Значение определенного интеграла по формуле Ньютона-Лейбница
+    let integralValue = (antiderivativeF b, antiderivativeF a) ||> (-)
 
-    let lab4ouput a b j =
-        printfn "Приближенное вычисление интеграла по составным квадратурным формулам"
-        printfn "Отрезок интегрирования [A; B] = [%.2f; %.2f]" a b
-        printfn "Точное значение интеграла на промежутке J = %.2f" j
-
+    /// Формула вычисления максимальной теоретической погрешности
     let getTheoryError coefficient subintervalsCount algebraicAccuracy maxD = 
         coefficient 
         * (b - a)
@@ -28,9 +31,15 @@ module Lab04 =
     let maximums = [1.; 1.; 0.769800358919501; 0.769800358919501; 4.08588550296966]
     let algebraicAccuracies = [0; 0; 1; 1; 3]
 
+    /// Консольный вывод лабораторной работы 4
+    let lab4ouput a b j =
+        printfn "Приближенное вычисление интеграла по составным квадратурным формулам"
+        printfn "Отрезок интегрирования [A; B] = [%.2f; %.2f]" a b
+        printfn "Точное значение интеграла на промежутке J = %.2f" j
+
     [<EntryPoint>]
     let main argv =
-        lab4ouput a b j
+        lab4ouput a b integralValue
 
         let intTask = IntegrationTask(f, {Left = a; Right = b})
         let mutable m = 0
@@ -43,7 +52,7 @@ module Lab04 =
                 intTask.SolveWith <| RightRectangleRule m
                 intTask.SolveWith <| MiddleRectangleRule m
                 intTask.SolveWith <| TrapezoidalRule m
-                intTask.SolveWith <| SimpsonsRule m
+                intTask.SolveWith <| SimpsonsRule (2 * m)
             |]
 
             let rules = [
@@ -58,18 +67,18 @@ module Lab04 =
                 rules |> List.mapi (fun i rule -> rule, solves.[i] |> sprintf "%.*f" precision)
                 
             let errors precision= 
-                rules |> List.mapi (fun i rule -> rule, abs (j - solves.[i]) |> sprintf "%.*f" precision)
+                rules |> List.mapi (fun i rule -> rule, abs (integralValue - solves.[i]) |> sprintf "%.*f" precision)
 
             let theoryErrors precision = 
                 rules 
                 |> List.mapi 
                     (fun i rule -> 
                         rule, 
-                        getTheoryError coefficients.[i] (float m / 2.) algebraicAccuracies.[i] maximums.[i] 
+                        getTheoryError coefficients.[i] (float m) algebraicAccuracies.[i] maximums.[i] 
                         |> sprintf "%.*f" precision
                     ) 
 
-            let precision = 8 
+            let precision = 8
             [solutions; errors; theoryErrors]
             |> List.map (fun f -> f precision)
             |> Chart.Table

@@ -4,13 +4,24 @@ module NumericalIntegration =
     open Utils
     open Utils.Segment
 
+    /// Квадратурные формулы приближенного вычисления определенных интегралов
     type QuadratureRule = 
         | LeftRectangleRule of int  
         | RightRectangleRule of int  
         | MiddleRectangleRule of int  
         | TrapezoidalRule of int
         | SimpsonsRule of int
+    with 
+        static member GetAlgebraicAccuracy (rule: QuadratureRule) =
+            match rule with 
+            | LeftRectangleRule _ -> 0
+            | RightRectangleRule _ -> 0
+            | MiddleRectangleRule _ -> 1
+            | TrapezoidalRule _ -> 1
+            | SimpsonsRule _ -> 3 
 
+
+    /// Задача численного интегрирования f на segment
     type IntegrationTask(f: float -> float, segment: LineSegment) = 
         let compositeLeftRectangleRule (segment: LineSegment) subintervalsCount = 
             let h = segment.Length / (float subintervalsCount)
@@ -42,7 +53,6 @@ module NumericalIntegration =
             |> (+) <| (f segment.Left |> (+) <| f segment.Right) / 2.
             |> (*) h
 
-        // N + 1 point -> N subintervals
         let compositeSimpsonsRule (segment: LineSegment) subintervalsCount =    
             let h = segment.Length / (float subintervalsCount)
             let middleCoefficients = 
