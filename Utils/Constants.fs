@@ -1,4 +1,6 @@
 namespace Utils
 
 module Constants = 
-    let ypsilon = 1e-12
+
+    [<Literal>]
+    let Ypsilon = 1e-12

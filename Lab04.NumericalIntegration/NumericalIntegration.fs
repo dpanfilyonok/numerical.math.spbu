@@ -6,19 +6,19 @@ module NumericalIntegration =
 
     /// Квадратурные формулы приближенного вычисления определенных интегралов
     type QuadratureRule = 
-        | LeftRectangleRule of int  
-        | RightRectangleRule of int  
-        | MiddleRectangleRule of int  
-        | TrapezoidalRule of int
-        | SimpsonsRule of int
+        | LeftRectangleRule  
+        | RightRectangleRule  
+        | MiddleRectangleRule  
+        | TrapezoidalRule
+        | SimpsonsRule
     with 
-        static member GetAlgebraicAccuracy (rule: QuadratureRule) =
+        static member GetAlgebraicAccuracyOf (rule: QuadratureRule) =
             match rule with 
-            | LeftRectangleRule _ -> 0
-            | RightRectangleRule _ -> 0
-            | MiddleRectangleRule _ -> 1
-            | TrapezoidalRule _ -> 1
-            | SimpsonsRule _ -> 3 
+            | LeftRectangleRule -> 0
+            | RightRectangleRule -> 0
+            | MiddleRectangleRule -> 1
+            | TrapezoidalRule -> 1
+            | SimpsonsRule -> 3 
 
 
     /// Задача численного интегрирования f на segment
@@ -69,11 +69,11 @@ module NumericalIntegration =
             |> (+) <| f segment.Left |> (+) <| f segment.Right
             |> (*) <| h / 3.
 
-        member this.SolveWith (quadratureRule: QuadratureRule) = 
+        member this.SolveWith (quadratureRule: QuadratureRule) (subintervalsCount: int) = 
             match quadratureRule with 
-            | LeftRectangleRule subintervalsCount -> compositeLeftRectangleRule segment subintervalsCount
-            | RightRectangleRule subintervalsCount -> compositeRightRectangleRule segment subintervalsCount
-            | MiddleRectangleRule subintervalsCount -> compositeMiddleRectangleRule segment subintervalsCount
-            | TrapezoidalRule subintervalsCount -> compositeTrapezoidalRule segment subintervalsCount
-            | SimpsonsRule subintervalsCount -> compositeSimpsonsRule segment subintervalsCount
+            | LeftRectangleRule -> compositeLeftRectangleRule segment subintervalsCount
+            | RightRectangleRule -> compositeRightRectangleRule segment subintervalsCount
+            | MiddleRectangleRule -> compositeMiddleRectangleRule segment subintervalsCount
+            | TrapezoidalRule -> compositeTrapezoidalRule segment subintervalsCount
+            | SimpsonsRule -> compositeSimpsonsRule segment (2 * subintervalsCount)
             

@@ -48,11 +48,11 @@ module Lab04 =
             m <- Convert.ToInt32 (Console.ReadLine ())
 
             let solves = [|
-                intTask.SolveWith <| LeftRectangleRule m
-                intTask.SolveWith <| RightRectangleRule m
-                intTask.SolveWith <| MiddleRectangleRule m
-                intTask.SolveWith <| TrapezoidalRule m
-                intTask.SolveWith <| SimpsonsRule (2 * m)
+                intTask.SolveWith LeftRectangleRule m
+                intTask.SolveWith RightRectangleRule m
+                intTask.SolveWith MiddleRectangleRule m
+                intTask.SolveWith TrapezoidalRule m
+                intTask.SolveWith SimpsonsRule m
             |]
 
             let rules = [
