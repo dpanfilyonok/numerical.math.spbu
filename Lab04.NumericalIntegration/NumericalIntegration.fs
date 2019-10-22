@@ -20,7 +20,6 @@ module NumericalIntegration =
             | TrapezoidalRule -> 1
             | SimpsonsRule -> 3 
 
-
     /// Задача численного интегрирования f на segment
     type IntegrationTask(f: float -> float, segment: LineSegment) = 
         let compositeLeftRectangleRule (segment: LineSegment) subintervalsCount = 
