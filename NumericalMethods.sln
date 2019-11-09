@@ -9,6 +9,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Lab02.AlgebraicInterpolatio
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Utils", "Utils\Utils.fsproj", "{65B99B54-614D-4E72-BEA7-792951F0DBC5}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Lab03.InverseInterpolation", "Lab03.InverseInterpolation\Lab03.InverseInterpolation.fsproj", "{512A71BB-345C-4875-B4A9-AC093A3A7636}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,17 @@ Global
 		{65B99B54-614D-4E72-BEA7-792951F0DBC5}.Release|x64.Build.0 = Release|Any CPU
 		{65B99B54-614D-4E72-BEA7-792951F0DBC5}.Release|x86.ActiveCfg = Release|Any CPU
 		{65B99B54-614D-4E72-BEA7-792951F0DBC5}.Release|x86.Build.0 = Release|Any CPU
+		{512A71BB-345C-4875-B4A9-AC093A3A7636}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{512A71BB-345C-4875-B4A9-AC093A3A7636}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{512A71BB-345C-4875-B4A9-AC093A3A7636}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{512A71BB-345C-4875-B4A9-AC093A3A7636}.Debug|x64.Build.0 = Debug|Any CPU
+		{512A71BB-345C-4875-B4A9-AC093A3A7636}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{512A71BB-345C-4875-B4A9-AC093A3A7636}.Debug|x86.Build.0 = Debug|Any CPU
+		{512A71BB-345C-4875-B4A9-AC093A3A7636}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{512A71BB-345C-4875-B4A9-AC093A3A7636}.Release|Any CPU.Build.0 = Release|Any CPU
+		{512A71BB-345C-4875-B4A9-AC093A3A7636}.Release|x64.ActiveCfg = Release|Any CPU
+		{512A71BB-345C-4875-B4A9-AC093A3A7636}.Release|x64.Build.0 = Release|Any CPU
+		{512A71BB-345C-4875-B4A9-AC093A3A7636}.Release|x86.ActiveCfg = Release|Any CPU
+		{512A71BB-345C-4875-B4A9-AC093A3A7636}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
