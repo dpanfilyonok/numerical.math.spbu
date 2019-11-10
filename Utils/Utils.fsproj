@@ -3,7 +3,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Section.fs" />
+    <Compile Include="LineSegment.fs" />
     <Compile Include="Point.fs" />
+    <Compile Include="Constants.fs" />
   </ItemGroup>
 </Project>
