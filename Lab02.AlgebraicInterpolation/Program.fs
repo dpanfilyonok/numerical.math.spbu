@@ -4,7 +4,7 @@ module Lab02 =
     open System
     open AlgebraicInterpolation
     open XPlot.GoogleCharts
-    open Utils.Point
+    open Utils
 
     /// Интерполируемая функция
     let f = (fun x -> 1. - Math.Exp(-x) + x ** 2.)

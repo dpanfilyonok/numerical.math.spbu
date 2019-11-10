@@ -3,7 +3,7 @@ namespace NumericalMethods
 /// Решение задачи алгебраического интерполирования многочленами в форме Лагранжа и Ньютона
 module AlgebraicInterpolation = 
     open System
-    open Utils.Point
+    open Utils
 
     /// Метод минимизации погрешности
     type ErrorMinimizationMethod = 
@@ -17,6 +17,8 @@ module AlgebraicInterpolation =
         /// Добавляет измерения в таблицу
         member this.AddMeasuring measuring = 
             allMeasuring <- List.append allMeasuring measuring 
+
+        member this.GetMeasuring () = allMeasuring
 
         /// Возвращает точки интерполяции, обеспечивающие наименьшую погрешность для заданной степени полинома
         member this.GetInterpolationPoints polynomialDegree minimizationMethod = 
@@ -80,3 +82,6 @@ module AlgebraicInterpolation =
                 |> List.zip dividedDifference
                 |> List.sumBy (fun (a, b) -> a * b)
             )            
+
+        member this.ValueOf argument = 
+            argument |> this.NewtownPolynomial allMeasuring.Length (InNode argument)  
