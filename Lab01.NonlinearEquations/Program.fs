@@ -38,7 +38,11 @@ module Lab01 =
         printRowNames ()
         
         let printMethodInfo method = 
-            let (roots, info) = findRoots f { Left = a; Right = b } epsilon method
+            let (_, info) = 
+                EquationSolveTask(f, {Left = a; Right = b})
+                |> Equation.withSolveMethod method
+                |> Equation.withAccuracy epsilon
+                |> Equation.solveWithInfo
             let addRow row (table: ConsoleTable) = table.AddRow row
             let table =
                 ConsoleTable (List.map (fun x -> x.Segment.ToString ()) info |> List.toArray)

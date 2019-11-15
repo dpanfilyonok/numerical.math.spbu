@@ -4,6 +4,7 @@ module InverseInterpolation =
     open AlgebraicInterpolation
     open NonlinearEquations
     open Utils.Point
+    open Utils
 
     type FInfo = {
         InterpolationTask: InterpolationTask 
@@ -11,13 +12,22 @@ module InverseInterpolation =
         Epsilon: float option
     }
 
-    let findInterpolationNode (info: FInfo) (polynomialDegree: int) (value: float) = 
-        if info.IfFuncIsContinuousStrictlyMonotone then
+    let findInterpolationNode (info: FInfo) (value: float) = 
+        if info.IfFuncIsContinuousStrictlyMonotone 
+        then
             let pointsOfInverseFunction = 
-                info.InterpolationTask.GetMeasuring ()
+                info.InterpolationTask.Measuring
                 |> List.map flip
             
-            let task = InterpolationTask(pointsOfInverseFunction)
-            task.LagrangePolynomial polynomialDegree (InNode value) value
+            InterpolationTask(pointsOfInverseFunction)
+            |> Interpolation.withDegree info.InterpolationTask.PolynomialDegree
+            |> Interpolation.valueOf value
+            |> List.singleton
         else
-            
+            let func = fun x -> info.InterpolationTask.ValueOf x - value
+            let nodes = info.InterpolationTask.Measuring |> List.map (fun x -> x.X)
+
+            EquationSolveTask(func, {Left = nodes |> List.min; Right = nodes |> List.max})
+            |> Equation.withSolveMethod Bisection
+            |> Equation.withAccuracy info.Epsilon.Value
+            |> Equation.solve
