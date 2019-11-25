@@ -1,8 +1,76 @@
-﻿// Learn more about F# at http://fsharp.org
+﻿namespace NumericalMethods
 
-open System
+module Lab03_1 = 
+    open System
+    open InverseInterpolation
+    open AlgebraicInterpolation
+    open Utils
 
-[<EntryPoint>]
-let main argv =
-    printfn "Hello World from F#!"
-    0 // return an integer exit code
+    let f = (fun x -> 1. - Math.Exp(-x) + x ** 2.)
+
+    let a = 0.
+
+    let b = 1.
+
+    // m+1 - число значений в таблице
+    let m = 10
+
+    let epsilon = 1e-8
+
+    let lab3input () = 
+        printfn "Введите значение F: "
+        let fValue = Convert.ToDouble (Console.ReadLine ())
+        printfn "Введите значение n: "
+        let n = Convert.ToInt32 (Console.ReadLine ())
+        printfn "Введите значение epsilon: "
+        let epsilon = Convert.ToDouble (Console.ReadLine ())
+
+        (fValue, n, epsilon)
+
+    let lab3output () = 
+        printfn "Решение задачи обратного интерполирования на отрезке [%.2f; %.2f]" a b
+
+    let printTable fValue nodes =
+        printfn "Значения аргумента - значение модуля невязки" 
+        nodes
+        |> List.iter (fun node -> printfn "%.8f - %.8f" node (Math.Abs (f node - fValue)))
+
+    let getMeasuringTable () = 
+        let nodes = List.init (m + 1) (fun j -> a + (float j) * (b - a) / (float m))
+        nodes
+        |> List.map (fun node -> f <| node)
+        |> List.zip nodes
+        |> List.map (fun point -> {X = fst point; Y = snd point})
+
+    [<EntryPoint>]
+    let main argv =
+        lab3output ()
+
+        let task = InterpolationTask(getMeasuringTable ())
+        
+        while true do
+            let (fValue, n, epsilon) = lab3input ()
+            let newTask = 
+                task
+                |> Interpolation.withDegree n
+
+            printfn "\nСпособ 1"
+            {
+                InterpolationTask = newTask
+                IfFuncIsContinuousStrictlyMonotone = true
+                Accuracy = None
+            } 
+            |> findInterpolationNodes fValue
+            |> printTable fValue
+
+            printfn "\nСпособ 2\n"
+            {
+                InterpolationTask = newTask
+                IfFuncIsContinuousStrictlyMonotone = false
+                Accuracy = Some epsilon
+            } 
+            |> findInterpolationNodes fValue
+            |> printTable fValue
+
+        0
+

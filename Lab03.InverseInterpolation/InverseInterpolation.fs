@@ -9,10 +9,10 @@ module InverseInterpolation =
     type FInfo = {
         InterpolationTask: InterpolationTask 
         IfFuncIsContinuousStrictlyMonotone: bool
-        Epsilon: float option
+        Accuracy: float option
     }
 
-    let findInterpolationNode (info: FInfo) (value: float) = 
+    let findInterpolationNodes (value: float) (info: FInfo) = 
         if info.IfFuncIsContinuousStrictlyMonotone 
         then
             let pointsOfInverseFunction = 
@@ -29,5 +29,5 @@ module InverseInterpolation =
 
             EquationSolveTask(func, {Left = nodes |> List.min; Right = nodes |> List.max})
             |> Equation.withSolveMethod Bisection
-            |> Equation.withAccuracy info.Epsilon.Value
+            |> Equation.withAccuracy info.Accuracy.Value
             |> Equation.solve
