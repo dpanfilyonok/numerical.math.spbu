@@ -24,6 +24,7 @@ module InverseInterpolation =
             |> Interpolation.valueOf value
             |> List.singleton
         else
+            // каждый раз заново вычисляется - ИСПРАВИТЬ
             let func = fun x -> info.InterpolationTask.ValueOf x - value
             let nodes = info.InterpolationTask.Measuring |> List.map (fun x -> x.X)
 

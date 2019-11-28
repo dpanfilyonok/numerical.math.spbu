@@ -27,9 +27,6 @@ module Lab03_1 =
 
         (fValue, n, epsilon)
 
-    let lab3output () = 
-        printfn "Решение задачи обратного интерполирования на отрезке [%.2f; %.2f]" a b
-
     let printTable fValue nodes =
         printfn "Значения аргумента - значение модуля невязки" 
         nodes
@@ -41,6 +38,14 @@ module Lab03_1 =
         |> List.map (fun node -> f <| node)
         |> List.zip nodes
         |> List.map (fun point -> {X = fst point; Y = snd point})
+
+    let lab3output () = 
+        printfn "Решение задачи обратного интерполирования на отрезке [%.2f; %.2f]" a b
+        printfn "Таблица пар (точка - значение)"
+        let table = getMeasuringTable ()
+        table
+        |> List.iter (fun point ->
+            printfn "%.2f : %.8f" point.X point.Y)
 
     [<EntryPoint>]
     let main argv =
@@ -63,7 +68,7 @@ module Lab03_1 =
             |> findInterpolationNodes fValue
             |> printTable fValue
 
-            printfn "\nСпособ 2\n"
+            printfn "\nСпособ 2"
             {
                 InterpolationTask = newTask
                 IfFuncIsContinuousStrictlyMonotone = false
