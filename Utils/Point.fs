@@ -1,9 +1,11 @@
 namespace Utils
 
+/// Точка (x, y)
+type Point = {
+    X: float
+    Y: float
+}  
+
 module Point = 
         
-    /// Точка (x, y)
-    type Point = {
-        X: float
-        Y: float
-    }
+    let flip (p: Point) = {X = p.Y; Y = p.X}

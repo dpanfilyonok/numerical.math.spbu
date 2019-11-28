@@ -4,7 +4,7 @@ module Lab02 =
     open System
     open AlgebraicInterpolation
     open XPlot.GoogleCharts
-    open Utils.Point
+    open Utils
 
     /// Интерполируемая функция
     let f = (fun x -> 1. - Math.Exp(-x) + x ** 2.)
@@ -49,10 +49,10 @@ module Lab02 =
     [<EntryPoint>]
     let main argv =
         let table = getMeasuringTable ()
-        let interpolationTask = InterpolationTask table
-        let interplationPoints = interpolationTask.GetInterpolationPoints n (InNode y)
-        let lagrangePolymomial =  interpolationTask.LagrangePolynomial n (InNode y)
-        let newtownPolynomial = interpolationTask.NewtownPolynomial n (InNode y)
+        let interpolationTask = InterpolationTask table |> Interpolation.withDegree n
+        let interplationPoints = interpolationTask.GetInterpolationPoints y
+        let lagrangePolymomial =  interpolationTask |> Interpolation.withForm LagrangePolynomial |> Interpolation.getPolynomialInNode y
+        let newtownPolynomial = interpolationTask |> Interpolation.withForm NewtownPolynomial |> Interpolation.getPolynomialInNode y
         lab2output 15 m table y n interplationPoints (lagrangePolymomial y) (newtownPolynomial y) 
 
         let lagrangeForm = [for x in -2. .. 0.1 .. 2. -> x, lagrangePolymomial x]
