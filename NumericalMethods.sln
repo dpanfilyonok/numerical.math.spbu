@@ -3,19 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Utils", "Utils\Utils.fsproj", "{65B99B54-614D-4E72-BEA7-792951F0DBC5}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Tests", "Tests\Tests.fsproj", "{0A3C161A-CAD8-4AAF-B3A5-453F8F5AE13A}"
+EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Lab01.NonlinearEquations", "Lab01.NonlinearEquations\Lab01.NonlinearEquations.fsproj", "{21E6F0B9-BE5C-4152-A870-4B1599927392}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Lab02.AlgebraicInterpolation", "Lab02.AlgebraicInterpolation\Lab02.AlgebraicInterpolation.fsproj", "{88B49262-2186-420A-8D5C-8F33882884AB}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Utils", "Utils\Utils.fsproj", "{65B99B54-614D-4E72-BEA7-792951F0DBC5}"
-EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Lab03.InverseInterpolation", "Lab03.InverseInterpolation\Lab03.InverseInterpolation.fsproj", "{512A71BB-345C-4875-B4A9-AC093A3A7636}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Lab03.NumericalDifferentiation", "Lab03.NumericalDifferentiation\Lab03.NumericalDifferentiation.fsproj", "{87F59352-4B47-41C6-A382-302A68AF036F}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Lab04.NumericalIntegration", "Lab04.NumericalIntegration\Lab04.NumericalIntegration.fsproj", "{A59B2A4D-304B-4DF4-BF3C-F4610D08C6A5}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Tests", "Tests\Tests.fsproj", "{0A3C161A-CAD8-4AAF-B3A5-453F8F5AE13A}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Lab03.NumericalDifferentiation", "Lab03.NumericalDifferentiation\Lab03.NumericalDifferentiation.fsproj", "{87F59352-4B47-41C6-A382-302A68AF036F}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Lab05.ClassicalOrthogonalPolynomials", "Lab05.ClassicalOrthogonalPolynomials\Lab05.ClassicalOrthogonalPolynomials.fsproj", "{09E94C1C-337C-4A4F-844B-81561901B856}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -114,5 +116,17 @@ Global
 		{87F59352-4B47-41C6-A382-302A68AF036F}.Release|x64.Build.0 = Release|Any CPU
 		{87F59352-4B47-41C6-A382-302A68AF036F}.Release|x86.ActiveCfg = Release|Any CPU
 		{87F59352-4B47-41C6-A382-302A68AF036F}.Release|x86.Build.0 = Release|Any CPU
+		{09E94C1C-337C-4A4F-844B-81561901B856}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09E94C1C-337C-4A4F-844B-81561901B856}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09E94C1C-337C-4A4F-844B-81561901B856}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{09E94C1C-337C-4A4F-844B-81561901B856}.Debug|x64.Build.0 = Debug|Any CPU
+		{09E94C1C-337C-4A4F-844B-81561901B856}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{09E94C1C-337C-4A4F-844B-81561901B856}.Debug|x86.Build.0 = Debug|Any CPU
+		{09E94C1C-337C-4A4F-844B-81561901B856}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09E94C1C-337C-4A4F-844B-81561901B856}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09E94C1C-337C-4A4F-844B-81561901B856}.Release|x64.ActiveCfg = Release|Any CPU
+		{09E94C1C-337C-4A4F-844B-81561901B856}.Release|x64.Build.0 = Release|Any CPU
+		{09E94C1C-337C-4A4F-844B-81561901B856}.Release|x86.ActiveCfg = Release|Any CPU
+		{09E94C1C-337C-4A4F-844B-81561901B856}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
