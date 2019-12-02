@@ -19,6 +19,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Lab04.NumericalIntegration"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Lab05.ClassicalOrthogonalPolynomials", "Lab05.ClassicalOrthogonalPolynomials\Lab05.ClassicalOrthogonalPolynomials.fsproj", "{09E94C1C-337C-4A4F-844B-81561901B856}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Lab06.HighAccuracyQuadratureRules", "Lab06.HighAccuracyQuadratureRules\Lab06.HighAccuracyQuadratureRules.fsproj", "{9E5CE60C-BEE1-4C6C-A507-5EE84D12DD33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -128,5 +130,17 @@ Global
 		{09E94C1C-337C-4A4F-844B-81561901B856}.Release|x64.Build.0 = Release|Any CPU
 		{09E94C1C-337C-4A4F-844B-81561901B856}.Release|x86.ActiveCfg = Release|Any CPU
 		{09E94C1C-337C-4A4F-844B-81561901B856}.Release|x86.Build.0 = Release|Any CPU
+		{9E5CE60C-BEE1-4C6C-A507-5EE84D12DD33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E5CE60C-BEE1-4C6C-A507-5EE84D12DD33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E5CE60C-BEE1-4C6C-A507-5EE84D12DD33}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9E5CE60C-BEE1-4C6C-A507-5EE84D12DD33}.Debug|x64.Build.0 = Debug|Any CPU
+		{9E5CE60C-BEE1-4C6C-A507-5EE84D12DD33}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9E5CE60C-BEE1-4C6C-A507-5EE84D12DD33}.Debug|x86.Build.0 = Debug|Any CPU
+		{9E5CE60C-BEE1-4C6C-A507-5EE84D12DD33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E5CE60C-BEE1-4C6C-A507-5EE84D12DD33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E5CE60C-BEE1-4C6C-A507-5EE84D12DD33}.Release|x64.ActiveCfg = Release|Any CPU
+		{9E5CE60C-BEE1-4C6C-A507-5EE84D12DD33}.Release|x64.Build.0 = Release|Any CPU
+		{9E5CE60C-BEE1-4C6C-A507-5EE84D12DD33}.Release|x86.ActiveCfg = Release|Any CPU
+		{9E5CE60C-BEE1-4C6C-A507-5EE84D12DD33}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
