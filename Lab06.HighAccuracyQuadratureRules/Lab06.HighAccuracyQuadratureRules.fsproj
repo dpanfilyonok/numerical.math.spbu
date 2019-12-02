@@ -21,4 +21,8 @@
     <Compile Include="HighAccuracyQuadratureRules.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MathNet.Numerics" Version="4.9.0" />
+    <PackageReference Include="MathNet.Numerics.FSharp" Version="4.9.0" />
+  </ItemGroup>
 </Project>
