@@ -11,10 +11,10 @@ module HighAccuracyQuadratureRules =
 
     let twoNodesGaussianQuadrature (f: float -> float) (w: float -> float) (segment: LineSegment) 
             ([<Out>] log: 
-            {|  moments: (float * float * float * float)
-                a1a2: (float * float)
-                nodes: (float * float) 
-                coeffs: (float * float) 
+            {|  Moments: (float * float * float * float)
+                PolynomialCoeffs: (float * float)
+                Nodes: (float * float) 
+                Coeffs: (float * float) 
             |} option byref) = 
 
         let n = 2
@@ -43,17 +43,16 @@ module HighAccuracyQuadratureRules =
         
         let methodLog =
             {| 
-                moments = (moments.[0], moments.[1], moments.[2], moments.[3])
-                a1a2 = (a1, a2)
-                nodes = (x1, x2)
-                coeffs = (coeff1, coeff2)
+                Moments = (moments.[0], moments.[1], moments.[2], moments.[3])
+                PolynomialCoeffs = (a1, a2)
+                Nodes = (x1, x2)
+                Coeffs = (coeff1, coeff2)
             |} |> Some
 
         log <- methodLog
         coeff1 * f x1 + coeff2 * f x2
 
-    /// w = 1
-    let compositeGaussLegendreQuadrature (f: float -> float) (segment: LineSegment) n m = 
+    let gaussLegendreQuadrature (f: float -> float) n (segment: LineSegment) =
         let normalizedSegment = {Left = -1.; Right = 1.}
 
         let (previousPolynomial, nthPolynomial) = 
@@ -73,19 +72,17 @@ module HighAccuracyQuadratureRules =
                 2. * (1. - node ** 2.) / 
                 (float n ** 2. * previousPolynomial node ** 2.))
                 
-        let gaussLegendreQuadrature (segment: LineSegment) =
-            [0 .. (n - 1)]
-            |> List.sumBy (fun k ->
-                coefficients.[k] * f (segment.Length / 2. * nodes.[k] + segment.Middle))
-            |> (*) <| segment.Length / 2. 
-        
+        [0 .. (n - 1)]
+        |> List.sumBy (fun k ->
+            coefficients.[k] * f (segment.Length / 2. * nodes.[k] + segment.Middle))
+        |> (*) <| segment.Length / 2. 
+
+    /// w = 1
+    let compositeGaussLegendreQuadrature (f: float -> float) (segment: LineSegment) n m = 
         segment
         |> Segment.splitSegmentIntoEqualParts m
-        |> Seq.sumBy gaussLegendreQuadrature   
-
-    let gaussLegendreQuadrature (f: float -> float) (segment: LineSegment) n =
-        compositeGaussLegendreQuadrature f segment n 1 
-
+        |> Seq.sumBy (gaussLegendreQuadrature f n)
+     
     let chebyshevGaussQuadrature (f: float -> float) n = 
         getChebyshevRoots n
         |> List.sumBy f
