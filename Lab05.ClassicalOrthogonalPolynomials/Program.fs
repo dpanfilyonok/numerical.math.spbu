@@ -58,12 +58,16 @@ module Lab05 =
             |> Chart.WithTitle (sprintf "Многочлен Лагерра степени %i" n)
             |> Chart.Show
 
+            let rToS (lst: float list) =
+                let s = lst |> List.map (sprintf "%.4f") 
+                String.Join (' ', s)
+
             [
-                "Корни мн-на Лежандра", EquationSolveTask(pn, stdSegment).Solve () |> sprintf "%A" :> value
-                "Корни мн-на Чебышёва", getChebyshevRoots n |> sprintf "%A" :> value
-                "Экстремумы мн-на Чебышёва", getChebyshevExtrema n |> sprintf "%A" :> value
-                "Корни мн-на Эрмита", EquationSolveTask(hn, hermiteSegment).Solve () |> sprintf "%A" :> value
-                "Корни мн-на Лагерра", EquationSolveTask(ln, laguerreSegment).Solve () |> sprintf "%A" :> value
+                "Корни мн-на Лежандра", EquationSolveTask(pn, stdSegment).Solve () |> rToS :> value
+                "Корни мн-на Чебышёва", getChebyshevRoots n |> rToS :> value
+                "Экстремумы мн-на Чебышёва", getChebyshevExtrema n |> rToS :> value
+                "Корни мн-на Эрмита", EquationSolveTask(hn, hermiteSegment).Solve () |> rToS :> value
+                "Корни мн-на Лагерра", EquationSolveTask(ln, laguerreSegment).Solve () |> rToS :> value
             ]
             |> Chart.Table
             |> Chart.Show
