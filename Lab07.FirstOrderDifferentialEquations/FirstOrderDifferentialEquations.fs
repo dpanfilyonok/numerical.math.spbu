@@ -10,7 +10,6 @@ type DESolveMethod =
     | RungeKutta4
 
 type DifferentialEquationSolveTask(f: float -> float -> float, cauchyTask: Point) = 
-        
     let eulerLeftMethod nodes = 
         nodes
         |> List.scan 
@@ -61,6 +60,7 @@ type DifferentialEquationSolveTask(f: float -> float -> float, cauchyTask: Point
                 }
             ) cauchyTask
             
+    /// including 0 derivative
     member this.SolveWithTaylorSeriesExpansionMethod (derivatives: float list) = 
         let n = List.length derivatives
         let factorials = 
@@ -71,8 +71,33 @@ type DifferentialEquationSolveTask(f: float -> float -> float, cauchyTask: Point
         (fun x ->
             (derivatives, factorials)
             ||> List.mapi2 (fun i derivative ``i!`` ->
-                 derivative * (x - cauchyTask.X) ** (float i) / ``i!`` )
+                derivative / ``i!`` * (x - cauchyTask.X) ** (float i))
+            |> List.sum
         )
+
+    member this.SolveWith4StepAdamsBashforthMethod (tableBegin: Point list) = 
+        let k = 4
+        let h = tableBegin.[1].X - tableBegin.[0].X
+        let hf = tableBegin |> List.map (fun point -> h * f point.X point.Y)
+        
+        let coeffs = [1.; 1. / 2.; 5. / 12.; 3. / 8.; 251. / 720.]
+
+        let c f x y = f y x
+        let hfDifference = 
+            let finiteDifference (nodes: float list) = 
+                nodes
+                |> List.windowed 2
+                |> List.map (fun pairList -> pairList |> List.reduce (c (-)))
+            [1 .. k]
+            |> List.scan (fun state _ -> finiteDifference state) hf
+            |> List.map List.last
+
+
+        (coeffs, hfDifference)
+        ||> List.map2 (*)
+        |> List.sum
+        |> (+) (List.last tableBegin).Y
+        |> (fun y -> {X = (List.last tableBegin).X + h; Y = y})
 
     member this.SolveInNodes (solveMethod: DESolveMethod) (nodes: float list) = 
         match solveMethod with 
@@ -80,21 +105,4 @@ type DifferentialEquationSolveTask(f: float -> float -> float, cauchyTask: Point
         | EulerMiddleRectangle -> eulerMiddleMethod nodes
         | EulerTrapezoidal -> eulerTrapezoidalMethod nodes
         | RungeKutta4 -> rungeKutta nodes
-
-    member this.SolveWith4StepAdamsBashforthMethod (tableBegin: Point list) = 
-        let k = 4
-        let h = tableBegin.[1].X - tableBegin.[0].X
-        let hf = tableBegin |> List.map (fun point -> h * f point.X point.Y)
-
-        let c f x y = f y x
-
-        let finiteDifference (nodes: float list) = 
-            nodes
-            |> List.windowed 2
-            |> List.map (fun pairList -> pairList |> List.reduce (c (-)))
         
-        let hfDifference = 
-            [0 .. k]
-            |> List.scan (fun state _ -> finiteDifference state) hf
-            |> List.map List.last
-        ()
