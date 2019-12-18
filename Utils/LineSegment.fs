@@ -1,5 +1,7 @@
 ﻿namespace Utils
 
+open System
+
 /// Отрезок [A; B]
 type LineSegment = {
     Left: float

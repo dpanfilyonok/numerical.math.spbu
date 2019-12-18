@@ -60,20 +60,12 @@ type DifferentialEquationSolveTask(f: float -> float -> float, cauchyTask: Point
                 }
             ) cauchyTask
             
-    /// including 0 derivative
-    member this.SolveWithTaylorSeriesExpansionMethod (derivatives: float list) = 
-        let n = List.length derivatives
-        let factorials = 
-            [1 .. (n - 1)]
-            |> List.scan (*) 1
-            |> List.map float
-
-        (fun x ->
-            (derivatives, factorials)
-            ||> List.mapi2 (fun i derivative ``i!`` ->
-                derivative / ``i!`` * (x - cauchyTask.X) ** (float i))
-            |> List.sum
-        )
+    member this.SolveInNodes (solveMethod: DESolveMethod) (nodes: float list) = 
+        match solveMethod with 
+        | EulerLeftRectangle -> eulerLeftMethod nodes
+        | EulerMiddleRectangle -> eulerMiddleMethod nodes
+        | EulerTrapezoidal -> eulerTrapezoidalMethod nodes
+        | RungeKutta4 -> rungeKutta nodes
 
     member this.SolveWith4StepAdamsBashforthMethod (tableBegin: Point list) = 
         let k = 4
@@ -92,17 +84,23 @@ type DifferentialEquationSolveTask(f: float -> float -> float, cauchyTask: Point
             |> List.scan (fun state _ -> finiteDifference state) hf
             |> List.map List.last
 
-
         (coeffs, hfDifference)
         ||> List.map2 (*)
         |> List.sum
         |> (+) (List.last tableBegin).Y
         |> (fun y -> {X = (List.last tableBegin).X + h; Y = y})
 
-    member this.SolveInNodes (solveMethod: DESolveMethod) (nodes: float list) = 
-        match solveMethod with 
-        | EulerLeftRectangle -> eulerLeftMethod nodes
-        | EulerMiddleRectangle -> eulerMiddleMethod nodes
-        | EulerTrapezoidal -> eulerTrapezoidalMethod nodes
-        | RungeKutta4 -> rungeKutta nodes
-        
+    /// including 0 derivative
+    member this.SolveWithTaylorSeriesExpansionMethod (derivatives: float list) = 
+        let n = List.length derivatives
+        let factorials = 
+            [1 .. (n - 1)]
+            |> List.scan (*) 1
+            |> List.map float
+
+        (fun x ->
+            (derivatives, factorials)
+            ||> List.mapi2 (fun i derivative ``i!`` ->
+                derivative / ``i!`` * (x - cauchyTask.X) ** (float i))
+            |> List.sum
+        )

@@ -2,6 +2,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <NoWarn>NU1608</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Lab01.NonlinearEquations/Lab01.NonlinearEquations.fsproj">

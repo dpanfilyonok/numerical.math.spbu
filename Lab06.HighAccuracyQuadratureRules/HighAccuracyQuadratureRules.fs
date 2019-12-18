@@ -7,7 +7,6 @@ module HighAccuracyQuadratureRules =
     open NonlinearEquations
     open NumericalIntegration
     open System.Runtime.InteropServices
-    open MathNet.Numerics.Integration
 
     let twoNodesGaussianQuadrature (f: float -> float) (w: float -> float) (segment: LineSegment) 
             ([<Out>] log: 
@@ -20,10 +19,16 @@ module HighAccuracyQuadratureRules =
         let n = 2
         let moments = 
             [0 .. (2 * n - 1)]
-            |> List.map (fun k -> 
-                // IntegrationTask((fun x -> w x * x ** float k), segment)
-                //     .SolveWith SimpsonsRule 10)
-                GaussLegendreRule.Integrate((fun x -> w x * x ** float k), segment.Left, segment.Right, 10)) // ???
+            |> List.map 
+                (fun k -> 
+                    let func x = 
+                        match w x * x ** float k with
+                        | result when Double.IsNaN result || Double.IsInfinity result -> 0. 
+                        | result -> result
+
+                    IntegrationTask(func, segment)
+                        .SolveWith MiddleRectangleRule 99
+                )
             |> List.toArray
 
         let a1 = 
@@ -52,6 +57,7 @@ module HighAccuracyQuadratureRules =
         log <- methodLog
         coeff1 * f x1 + coeff2 * f x2
 
+    // w = 1
     let gaussLegendreQuadrature (f: float -> float) n (segment: LineSegment) =
         let normalizedSegment = {Left = -1.; Right = 1.}
 
@@ -77,7 +83,6 @@ module HighAccuracyQuadratureRules =
             coefficients.[k] * f (segment.Length / 2. * nodes.[k] + segment.Middle))
         |> (*) <| segment.Length / 2. 
 
-    /// w = 1
     let compositeGaussLegendreQuadrature (f: float -> float) (segment: LineSegment) n m = 
         segment
         |> Segment.splitSegmentIntoEqualParts m
