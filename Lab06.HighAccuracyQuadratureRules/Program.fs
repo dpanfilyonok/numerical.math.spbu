@@ -6,8 +6,7 @@ module Lab06 =
     open Utils
 
     let f = Math.Sin
-    let w = fun (x: float) -> 1.
-    // let w = Math.Sqrt >> (/) 1.
+    let w = Math.Sqrt >> (/) 1.
 
     let a = -1.
     let b = 1.
